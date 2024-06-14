@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/authContext.tsx';
+import AddPostForm from './addPostForm.tsx';
+
 const profileIcon = require('../assets/icons/userProfile.png'); // Importa el ícono de perfil
+
 const Navbar = () => {
   const { isAuthenticated, handleLogout } = useAuth();
+  const [showModal, setShowModal] = useState(false);
+
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   return (
     <nav className="bg-white shadow p-4">
@@ -16,8 +28,14 @@ const Navbar = () => {
             <>
               <div className="mr-4 text-blue-900 font-semibold">Welcome, User</div>
               <button
-                onClick={handleLogout}
+                onClick={openModal}
                 className="bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+              >
+                Add Post
+              </button>
+              <button
+                onClick={handleLogout}
+                className="bg-blue-900 ml-4 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
               >
                 Logout
               </button>
@@ -45,6 +63,14 @@ const Navbar = () => {
           )}
         </div>
       </div>
+      {showModal && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
+          <div className="bg-white p-6 rounded-lg">
+            <button onClick={closeModal} className="absolute top-2 right-2 text-gray-500 hover:text-gray-700">&times;</button>
+            <AddPostForm onClose={closeModal} />
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
