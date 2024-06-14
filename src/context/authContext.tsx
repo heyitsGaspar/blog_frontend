@@ -33,6 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const data = await response.json();
         localStorage.setItem('token', data.token);
         setIsAuthenticated(true);
+        console.log('Token saved:', data.token); 
       } else {
         throw new Error('Login failed');
       }

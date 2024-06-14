@@ -5,6 +5,8 @@ import LoginForm from './components/loginForm.tsx';
 import RegisterForm from './components/registerForm.tsx';
 import { AuthProvider } from './context/authContext.tsx';
 
+
+
 const App = () => {
   return (
     <AuthProvider>
@@ -13,6 +15,7 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
+          
         </Routes>
       </Router>
     </AuthProvider>
