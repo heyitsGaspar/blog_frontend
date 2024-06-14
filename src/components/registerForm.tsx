@@ -1,61 +1,9 @@
-// import React, { useState, ChangeEvent, FormEvent } from 'react';
-// import axios from 'axios';
-// import {useNavigate} from 'react-router-dom';
-
-// const RegisterForm = () => {
-//   const [formData, setFormData] = useState({
-//     username: '',
-//     email: '',
-//     password: ''
-//   });
-  
-//   const navigate = useNavigate();
-//   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-//     setFormData({ ...formData, [e.target.name]: e.target.value });
-//   };
-
-//   const handleSubmit = async (e: FormEvent) => {
-//     e.preventDefault();
-//     console.log('Submitting form with data:', formData);
-//     try {
-//       const response = await axios.post('https://apiblogplatform-production.up.railway.app/auth/register', formData);
-//       console.log('User registered successfully:', response.data);
-//       // Aquí puedes manejar la respuesta del servidor, como redirigir al usuario o mostrar un mensaje de éxito.
-//       //Hacer que cuando le de a registrarse se redirije a la pagina de inicio
-//       navigate('/');
-//       // navigate('/');
-//     } catch (error) {
-//       console.error('Registration error:', error);
-//       // Aquí puedes manejar el error, como mostrar un mensaje de error al usuario.
-//     }
-//   };
-
-//   return (
-//     <form onSubmit={handleSubmit} className="max-w-md mx-auto my-4 p-4 bg-white shadow-lg rounded-lg">
-//       <h2 className="text-xl font-semibold mb-4">Register</h2>
-//       <div className="mb-4">
-//         <label htmlFor="username" className="block mb-2">Username</label>
-//         <input type="text" id="username" name="username" value={formData.username} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md" />
-//       </div>
-//       <div className="mb-4">
-//         <label htmlFor="email" className="block mb-2">Email</label>
-//         <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md" />
-//       </div>
-//       <div className="mb-4">
-//         <label htmlFor="password" className="block mb-2">Password</label>
-//         <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md" />
-//       </div>
-//       <button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">Register</button>
-//     </form>
-//   );
-// };
-
-// export default RegisterForm;
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/authContext.tsx';
 
 const RegisterForm = () => {
+  const { register } = useAuth();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -72,8 +20,7 @@ const RegisterForm = () => {
     e.preventDefault();
     console.log('Submitting form with data:', formData);
     try {
-      const response = await axios.post('https://apiblogplatform-production.up.railway.app/auth/register', formData);
-      console.log('User registered successfully:', response.data);
+      await register(formData.username, formData.email, formData.password);
       navigate('/');
     } catch (error) {
       console.error('Registration error:', error);
@@ -82,7 +29,7 @@ const RegisterForm = () => {
 
   return (
     <div className="h-[100vh] items-center flex justify-center px-5 lg:px-0">
-      <div className="max-w-screen-xl  bg-white border shadow sm:rounded-lg flex justify-center flex-1">
+      <div className="max-w-screen-xl bg-white border shadow sm:rounded-lg flex justify-center flex-1">
         <div className="flex-1 bg-blue-900 text-center hidden md:flex">
           <div
             className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"

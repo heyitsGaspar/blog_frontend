@@ -1,8 +1,9 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/authContext.tsx'; // Importa el contexto de autenticación
 
 const LoginForm = () => {
+  const { handleLogin } = useAuth(); // Obtén la función handleLogin del contexto de autenticación
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -18,8 +19,7 @@ const LoginForm = () => {
     e.preventDefault();
     console.log('Submitting form with data:', formData);
     try {
-      const response = await axios.post('https://apiblogplatform-production.up.railway.app/auth/login', formData);
-      console.log('User logged in successfully:', response.data);
+      await handleLogin(formData); // Utiliza la función handleLogin del contexto de autenticación
       navigate('/');
     } catch (error) {
       console.error('Login error:', error);
