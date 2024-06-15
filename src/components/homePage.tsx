@@ -31,9 +31,6 @@ interface Post {
 const HomePage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [newComment, setNewComment] = useState("");
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [authToken, setAuthToken] = useState<string | null>(null); // Agrega esto para manejar el token de autorización
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -46,48 +43,23 @@ const HomePage: React.FC = () => {
       }
     };
 
-    const token = localStorage.getItem('authToken'); // Asume que el token de autorización está guardado en localStorage
-    setAuthToken(token);
-
     fetchPosts();
   }, []);
 
-  const openModal = (post: Post) => {
-    setSelectedPost(post);
+  const openModal = () => {
     setModalIsOpen(true);
   };
 
   const closeModal = () => {
     setModalIsOpen(false);
-    setNewComment("");
   };
 
-  const handleAddComment = async () => {
-    if (!newComment || !selectedPost || !authToken) return;
-  
-    try {
-      const response = await axios.post<Comment>(
-        `https://apiblogplatform-production.up.railway.app/post/${selectedPost.id}/comments`,
-        {
-          content: newComment,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`, // Asegúrate de usar 'Bearer' y el token correcto
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-      console.log(response.data); // Verifica los datos recibidos
-      setPosts(posts.map(post => 
-        post.id === selectedPost.id ? { ...post, Comments: post.Comments ? [...post.Comments, response.data] : [response.data] } : post
-      ));
+  const handleClickOutsideModal = (e) => {
+    if (e.target.classList.contains('modal-overlay')) {
       closeModal();
-    } catch (error) {
-      console.error('Error adding comment:', error);
     }
   };
-  
+
   return (
     <>
       <Navbar />
@@ -114,7 +86,7 @@ const HomePage: React.FC = () => {
                   ))}
                   <button 
                     className="mt-2 bg-blue-500 text-white px-4 py-2 rounded"
-                    onClick={() => openModal(post)}
+                    onClick={openModal}
                   >
                     Add Comment
                   </button>
@@ -133,28 +105,18 @@ const HomePage: React.FC = () => {
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel="Add Comment"
-        className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto mt-20"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+        className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto mt-20 relative"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center modal-overlay"
+        onClick={handleClickOutsideModal}
       >
-        <h2 className="text-2xl mb-4">Add Comment</h2>
-        <textarea 
-          className="w-full p-2 border border-gray-300 rounded mb-4"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          rows={4}
-        ></textarea>
-        <div className="flex justify-end">
+        <h2 className="text-2xl mb-4">En construcción</h2>
+        <p>Esta función está en desarrollo. Vuelve pronto!</p>
+        <div className="flex justify-end mt-4">
           <button 
             className="bg-gray-500 text-white px-4 py-2 rounded mr-2"
             onClick={closeModal}
           >
-            Cancel
-          </button>
-          <button 
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-            onClick={handleAddComment}
-          >
-            Add Comment
+            Cancelar
           </button>
         </div>
       </Modal>
