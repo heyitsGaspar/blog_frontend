@@ -1,23 +1,16 @@
-// HomePage.tsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Route, Routes } from 'react-router-dom';
+import { Link, Routes, Route } from 'react-router-dom';
 import Navbar from '../components/navbar.tsx';
 import LoginForm from '../components/loginForm.tsx';
 import RegisterForm from '../components/registerForm.tsx';
+import PostDetailPage from '../components/postDetails.tsx';
 import Modal from 'react-modal';
 
 Modal.setAppElement('#root'); // Asegúrate de que esto coincida con el elemento raíz de tu aplicación
 
-interface Comment {
-  id: number;
-  content: string;
-  user_id: string;
-  createdAt: string;
-}
-
 interface Post {
-  id: number;
+  id: string; // Cambia el tipo de id a string si usas UUID
   title: string;
   content: string;
   image_url?: string;
@@ -25,7 +18,6 @@ interface Post {
   User?: {
     username: string;
   };
-  Comments?: Comment[];
 }
 
 const HomePage: React.FC = () => {
@@ -54,8 +46,8 @@ const HomePage: React.FC = () => {
     setModalIsOpen(false);
   };
 
-  const handleClickOutsideModal = (e) => {
-    if (e.target.classList.contains('modal-overlay')) {
+  const handleClickOutsideModal = (e: React.MouseEvent<HTMLDivElement>) => {
+    if ((e.target as HTMLElement).classList.contains('modal-overlay')) {
       closeModal();
     }
   };
@@ -68,37 +60,24 @@ const HomePage: React.FC = () => {
         <p className="text-lg mb-6">Discover amazing content and join our community of writers and readers.</p>
         <div className="w-full max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {posts.map((post) => (
-            <div key={post.id} className="bg-white shadow-md rounded-lg overflow-hidden">
-              {post.image_url && <img src={post.image_url} alt={post.title} className="w-full h-48 object-cover" />}
-              <div className="p-4">
-                <h2 className="text-2xl font-bold mb-2">{post.title}</h2>
-                <p className="text-gray-700 mb-4">{post.content}</p>
-                {post.User && <p className="text-sm text-gray-500">By {post.User.username}</p>}
-                <p className="text-sm text-gray-500">{new Date(post.createdAt).toLocaleDateString()}</p>
-                <div className="mt-4">
-                  <h3 className="text-lg font-semibold">Comments:</h3>
-                  {post.Comments && post.Comments.map((comment) => (
-                    <div key={comment.id} className="mt-2 border-t border-gray-200 pt-2">
-                      <p className="text-gray-700">{comment.content}</p>
-                      <p className="text-sm text-gray-500">By {comment.user_id}</p> {/* Ajusta esto según sea necesario */}
-                      <p className="text-sm text-gray-500">{new Date(comment.createdAt).toLocaleDateString()}</p>
-                    </div>
-                  ))}
-                  <button 
-                    className="mt-2 bg-blue-500 text-white px-4 py-2 rounded"
-                    onClick={openModal}
-                  >
-                    Add Comment
-                  </button>
+            <Link key={post.id} to={`/post/${post.id}`}>
+              <div className="bg-white shadow-md rounded-lg overflow-hidden cursor-pointer transform transition duration-300 hover:scale-105">
+                {post.image_url && <img src={post.image_url} alt={post.title} className="w-full h-48 object-cover" />}
+                <div className="p-4">
+                  <h2 className="text-2xl font-bold mb-2">{post.title}</h2>
+                  <p className="text-gray-700 mb-4">{post.content}</p>
+                  {post.User && <p className="text-sm text-gray-500">By {post.User.username}</p>}
+                  <p className="text-sm text-gray-500">{new Date(post.createdAt).toLocaleDateString()}</p>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
       <Routes>
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
+        <Route path="/post/:id" element={<PostDetailPage />} />
       </Routes>
 
       <Modal
@@ -110,9 +89,9 @@ const HomePage: React.FC = () => {
         onClick={handleClickOutsideModal}
       >
         <h2 className="text-2xl mb-4">En construcción</h2>
-        <p>Esta función está en desarrollo. Vuelve pronto!</p>
+        <p>Esta función está en desarrollo. ¡Vuelve pronto!</p>
         <div className="flex justify-end mt-4">
-          <button 
+          <button
             className="bg-gray-500 text-white px-4 py-2 rounded mr-2"
             onClick={closeModal}
           >

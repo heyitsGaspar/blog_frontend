@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const register = async (username: string, email: string, password: string) => {
     try {
-      const response = await fetch('https://apiblogplatform-production.up.railway.app/auth/register', {
+      const response = await fetch('https://apiblogplatform-production.up.railway.app/register', { // TODO: cambiar a https
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
